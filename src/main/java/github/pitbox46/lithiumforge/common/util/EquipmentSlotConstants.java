@@ -1,0 +1,13 @@
+package github.pitbox46.lithiumforge.common.util;
+
+
+import net.minecraft.world.entity.EquipmentSlot;
+
+/**
+ * Pre-initialized constants to avoid unnecessary allocations.
+ */
+public final class EquipmentSlotConstants {
+    private EquipmentSlotConstants() {}
+
+    public static final EquipmentSlot[] ALL = EquipmentSlot.values();
+}

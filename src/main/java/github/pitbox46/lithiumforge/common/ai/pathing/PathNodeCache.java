@@ -1,19 +1,24 @@
 package github.pitbox46.lithiumforge.common.ai.pathing;
 
+import github.pitbox46.lithiumforge.common.block.BlockCountingSection;
+import github.pitbox46.lithiumforge.common.block.BlockStateFlags;
+import github.pitbox46.lithiumforge.common.util.Pos;
 import github.pitbox46.lithiumforge.common.world.ChunkView;
 import github.pitbox46.lithiumforge.common.world.WorldHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 
-import javax.swing.text.html.BlockView;
 
 public abstract class PathNodeCache {
     private static boolean isChunkSectionDangerousNeighbor(LevelChunkSection section) {
-        return section.getBlockStateContainer()
-                .hasAny(state -> getNeighborPathNodeType(state) != BlockPathTypes.OPEN);
+        return section.getStates()
+                .maybeHas(state -> getNeighborPathNodeType(state) != BlockPathTypes.OPEN);
     }
 
     public static BlockPathTypes getPathNodeType(BlockState state) {
@@ -45,7 +50,7 @@ public abstract class PathNodeCache {
     }
 
 
-    public static BlockPathTypes getNodeTypeFromNeighbors(BlockView world, BlockPos.MutableBlockPos pos, BlockPathTypes type) {
+    public static BlockPathTypes getNodeTypeFromNeighbors(BlockGetter world, BlockPos.MutableBlockPos pos, BlockPathTypes type) {
         int x = pos.getX();
         int y = pos.getY();
         int z = pos.getZ();
@@ -57,13 +62,13 @@ public abstract class PathNodeCache {
         if (world instanceof ChunkView chunkView && WorldHelper.areNeighborsWithinSameChunkSection(pos)) {
             // If the y-coordinate is within bounds, we can cache the chunk section. Otherwise, the if statement to check
             // if the cached chunk section was initialized will early-exit.
-            if (!world.isOutOfHeightLimit(y)) {
-                Chunk chunk = chunkView.getLoadedChunk(Pos.ChunkCoord.fromBlockCoord(x), Pos.ChunkCoord.fromBlockCoord(z));
+            if (!world.isOutsideBuildHeight(y)) {
+                ChunkAccess chunk = chunkView.getLoadedChunk(Pos.ChunkCoord.fromBlockCoord(x), Pos.ChunkCoord.fromBlockCoord(z));
 
                 // If the chunk is absent, the cached section above will remain null, as there is no chunk section anyways.
                 // An empty chunk or section will never pose any danger sources, which will be caught later.
                 if (chunk != null) {
-                    section = chunk.getSectionArray()[Pos.SectionYIndex.fromBlockCoord(world, y)];
+                    section = chunk.getSections()[Pos.SectionYIndex.fromBlockCoord(world, y)];
                 }
             }
 
@@ -107,17 +112,17 @@ public abstract class PathNodeCache {
                         continue;
                     }
 
-                    PathNodeType neighborType = PathNodeCache.getNeighborPathNodeType(state);
+                    BlockPathTypes neighborType = PathNodeCache.getNeighborPathNodeType(state);
 
                     if (neighborType == null) { //Here null means that no path node type is cached (uninitalized or dynamic)
                         //Passing null as previous node type to the method signals to other lithium mixins that we only want the neighbor behavior of this block and not its neighbors
-                        neighborType = LandPathNodeMaker.getNodeTypeFromNeighbors(world, pos, null);
+                        neighborType = WalkNodeEvaluator.checkNeighbourBlocks(world, pos, null);
                         //Here null means that the path node type is not changed by the block!
                         if (neighborType == null) {
-                            neighborType = PathNodeType.OPEN;
+                            neighborType = BlockPathTypes.OPEN;
                         }
                     }
-                    if (neighborType != PathNodeType.OPEN) {
+                    if (neighborType != BlockPathTypes.OPEN) {
                         return neighborType;
                     }
                 }

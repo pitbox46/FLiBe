@@ -18,6 +18,7 @@ import net.minecraft.world.EntityView;
 import net.minecraft.world.World;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.SectionedEntityCache;
+import net.minecraft.world.level.EntityGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 
@@ -32,7 +33,7 @@ public class WorldHelper {
      * Partial [VanillaCopy]
      * The returned entity iterator is only used for collision interactions. As most entities do not collide with other
      * entities (cramming is different), getting those is not necessary. This is why we only get entities when they override
-     * {@link Entity#isCollidable()} if the reference entity does not override {@link Entity#collidesWith(Entity)}.
+     * {@link Entity#canBeCollidedWith()} if the reference entity does not override {@link Entity#canCollideWith(Entity)}.
      * Note that the returned iterator contains entities that override these methods. This does not mean that these methods
      * always return true.
      *
@@ -41,17 +42,17 @@ public class WorldHelper {
      * @param collidingEntity the entity that is searching for the colliding entities
      * @return iterator of entities with collision boxes
      */
-    public static List<Entity> getEntitiesForCollision(EntityView entityView, AABB box, Entity collidingEntity) {
+    public static List<Entity> getEntitiesForCollision(EntityGetter entityView, AABB box, Entity collidingEntity) {
         if (!CUSTOM_TYPE_FILTERABLE_LIST_DISABLED && entityView instanceof Level world && (collidingEntity == null || !EntityClassGroup.MINECART_BOAT_LIKE_COLLISION.contains(collidingEntity.getClass()))) {
             SectionedEntityCache<Entity> cache = getEntityCacheOrNull(world);
             if (cache != null) {
-                world.getProfiler().visit("getEntities");
+                world.getProfiler().incrementCounter("getEntities");
                 return getEntitiesOfClassGroup(cache, collidingEntity, EntityClassGroup.NoDragonClassGroup.BOAT_SHULKER_LIKE_COLLISION, box);
             }
         }
         //use vanilla code in case the shortcut is not applicable
         // due to the reference entity implementing special collision or the mixin being disabled in the config
-        return entityView.getOtherEntities(collidingEntity, box);
+        return entityView.getEntities(collidingEntity, box);
     }
 
     //Requires chunk.entity_class_groups
