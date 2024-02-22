@@ -5,6 +5,15 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "lithiumforge.refmap.json",
   "mixins": [
+    "chunk.entity_class_groups.ClassInstanceMultiMapMixin",
+    "chunk.no_locking.LevelChunkSectionMixin",
+    "chunk.no_locking.PalettedContainerMixin",
+    "chunk.no_validation.SimpleBitStorageMixin",
+    "chunk.no_validation.ZeroBitStorageMixin",
+    "chunk.palette.PalettedContainer$StrategyMixin",
+    "chunk.serialization.PalettedContainerMixin",
+    "chunk.serialization.SimpleBitStorageMixin",
+    "collisions.fluid.EntityMixin"
   ],
   "client": [
   ],

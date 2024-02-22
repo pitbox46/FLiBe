@@ -1,11 +1,7 @@
 package github.pitbox46.lithiumforge.mixin.collisions.fluid;
 
+import github.pitbox46.lithiumforge.common.entity.FluidCachingEntity;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
-import me.jellysquid.mods.lithium.common.block.BlockCountingSection;
-import me.jellysquid.mods.lithium.common.block.BlockStateFlags;
-import me.jellysquid.mods.lithium.common.block.TrackedBlockStatePredicate;
-import me.jellysquid.mods.lithium.common.entity.FluidCachingEntity;
-import me.jellysquid.mods.lithium.common.util.Pos;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.material.Fluid;
@@ -23,7 +19,7 @@ public abstract class EntityMixin implements FluidCachingEntity {
     protected Object2DoubleMap<TagKey<Fluid>> fluidHeight;
 
     @Inject(
-            method = "updateMovementInFluid(Lnet/minecraft/registry/tag/TagKey;D)Z",
+            method = "updateFluidHeightAndDoFluidPushing(Lnet/minecraft/tags/TagKey;D)Z",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/entity/Entity;isPushedByFluids()Z",

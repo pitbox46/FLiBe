@@ -1,25 +1,16 @@
 package github.pitbox46.lithiumforge.common.world;
 
-import me.jellysquid.mods.lithium.common.client.ClientWorldAccessor;
-import me.jellysquid.mods.lithium.common.entity.EntityClassGroup;
-import me.jellysquid.mods.lithium.common.entity.pushable.EntityPushablePredicate;
-import me.jellysquid.mods.lithium.common.world.chunk.ClassGroupFilterableList;
-import me.jellysquid.mods.lithium.mixin.chunk.entity_class_groups.ClientEntityManagerAccessor;
-import me.jellysquid.mods.lithium.mixin.chunk.entity_class_groups.EntityTrackingSectionAccessor;
-import me.jellysquid.mods.lithium.mixin.chunk.entity_class_groups.ServerEntityManagerAccessor;
-import me.jellysquid.mods.lithium.mixin.chunk.entity_class_groups.ServerWorldAccessor;
+import github.pitbox46.lithiumforge.common.client.ClientWorldAccessor;
+import github.pitbox46.lithiumforge.common.entity.EntityClassGroup;
+import github.pitbox46.lithiumforge.common.entity.pushable.EntityPushablePredicate;
+import github.pitbox46.lithiumforge.mixin.chunk.entity_class_groups.TransientEntitySectionManagerAccessor;
+import github.pitbox46.lithiumforge.mixin.chunk.entity_class_groups.ServerEntityManagerAccessor;
+import github.pitbox46.lithiumforge.mixin.chunk.entity_class_groups.ServerLevelAccessor;
 import net.minecraft.core.BlockPos;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.collection.TypeFilterableList;
-import net.minecraft.util.function.LazyIterationConsumer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.world.EntityView;
-import net.minecraft.world.World;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.SectionedEntityCache;
 import net.minecraft.world.level.EntityGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.entity.EntitySectionStorage;
 import net.minecraft.world.phys.AABB;
 
 import java.util.ArrayList;
@@ -44,7 +35,7 @@ public class WorldHelper {
      */
     public static List<Entity> getEntitiesForCollision(EntityGetter entityView, AABB box, Entity collidingEntity) {
         if (!CUSTOM_TYPE_FILTERABLE_LIST_DISABLED && entityView instanceof Level world && (collidingEntity == null || !EntityClassGroup.MINECART_BOAT_LIKE_COLLISION.contains(collidingEntity.getClass()))) {
-            SectionedEntityCache<Entity> cache = getEntityCacheOrNull(world);
+            EntitySectionStorage<Entity> cache = getEntityCacheOrNull(world);
             if (cache != null) {
                 world.getProfiler().incrementCounter("getEntities");
                 return getEntitiesOfClassGroup(cache, collidingEntity, EntityClassGroup.NoDragonClassGroup.BOAT_SHULKER_LIKE_COLLISION, box);
@@ -56,20 +47,20 @@ public class WorldHelper {
     }
 
     //Requires chunk.entity_class_groups
-    public static SectionedEntityCache<Entity> getEntityCacheOrNull(Level world) {
+    public static EntitySectionStorage<Entity> getEntityCacheOrNull(Level world) {
         if (world instanceof ClientWorldAccessor) {
             //noinspection unchecked
-            return ((ClientEntityManagerAccessor<Entity>) ((ClientWorldAccessor) world).getEntityManager()).getCache();
-        } else if (world instanceof ServerWorldAccessor) {
+            return ((TransientEntitySectionManagerAccessor<Entity>) ((ClientWorldAccessor) world).getEntityManager()).getCache();
+        } else if (world instanceof ServerLevelAccessor) {
             //noinspection unchecked
-            return ((ServerEntityManagerAccessor<Entity>) ((ServerWorldAccessor) world).getEntityManager()).getCache();
+            return ((ServerEntityManagerAccessor<Entity>) ((ServerLevelAccessor) world).getEntityManager()).getCache();
         }
         return null;
     }
 
-    public static List<Entity> getEntitiesOfClassGroup(SectionedEntityCache<Entity> cache, Entity collidingEntity, EntityClassGroup.NoDragonClassGroup entityClassGroup, Box box) {
+    public static List<Entity> getEntitiesOfClassGroup(EntitySectionStorage<Entity> cache, Entity collidingEntity, EntityClassGroup.NoDragonClassGroup entityClassGroup, Box box) {
         ArrayList<Entity> entities = new ArrayList<>();
-        cache.forEachInBox(box, section -> {
+        cache.forEachAccessibleNonEmptySection(box, section -> {
             //noinspection unchecked
             TypeFilterableList<Entity> allEntities = ((EntityTrackingSectionAccessor<Entity>) section).getCollection();
             //noinspection unchecked
@@ -87,9 +78,9 @@ public class WorldHelper {
         return entities;
     }
 
-    public static List<Entity> getPushableEntities(Level world, SectionedEntityCache<Entity> cache, Entity except, AABB box, EntityPushablePredicate<? super Entity> entityPushablePredicate) {
+    public static List<Entity> getPushableEntities(Level world, EntitySectionStorage<Entity> cache, Entity except, AABB box, EntityPushablePredicate<? super Entity> entityPushablePredicate) {
         ArrayList<Entity> entities = new ArrayList<>();
-        cache.forEachInBox(box, section -> ((ClimbingMobCachingSection) section).collectPushableEntities(world, except, box, entityPushablePredicate, entities));
+        cache.forEachAccessibleNonEmptySection(box, section -> ((ClimbingMobCachingSection) section).collectPushableEntities(world, except, box, entityPushablePredicate, entities));
         return entities;
     }
 
