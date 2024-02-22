@@ -3,7 +3,7 @@
   "minVersion": "0.8",
   "package": "github.pitbox46.lithiumforge.mixin",
   "compatibilityLevel": "JAVA_8",
-  "refmap": "LithiumForge.refmap.json",
+  "refmap": "lithiumforge.refmap.json",
   "mixins": [
   ],
   "client": [
