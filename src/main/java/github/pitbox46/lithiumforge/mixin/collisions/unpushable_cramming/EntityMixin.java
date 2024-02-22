@@ -1,8 +1,8 @@
 package github.pitbox46.lithiumforge.mixin.collisions.unpushable_cramming;
 
-import me.jellysquid.mods.lithium.common.entity.pushable.BlockCachingEntity;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
+import github.pitbox46.lithiumforge.common.entity.pushable.BlockCachingEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -14,13 +14,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Entity.class)
 public class EntityMixin implements BlockCachingEntity {
     @Shadow
-    private @Nullable BlockState blockStateAtPos;
+    private @Nullable BlockState feetBlockState;
 
     @Inject(
-            method = "setPos(DDD)V",
+            method = "setPosRaw",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/util/math/ChunkSectionPos;getSectionCoord(I)I",
+                    target = "Lnet/minecraft/core/SectionPos;blockToSectionCoord(I)I",
                     ordinal = 0,
                     shift = At.Shift.BEFORE
             )
@@ -33,7 +33,7 @@ public class EntityMixin implements BlockCachingEntity {
             method = "baseTick()V",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/entity/Entity;hasVehicle()Z",
+                    target = "Lnet/minecraft/world/entity/Entity;isPassenger()Z",
                     ordinal = 0,
                     shift = At.Shift.BEFORE
             )
@@ -43,19 +43,19 @@ public class EntityMixin implements BlockCachingEntity {
     }
 
     @Inject(
-            method = "getBlockStateAtPos()Lnet/minecraft/block/BlockState;",
+            method = "getFeetBlockState",
             at = @At(
                     value = "INVOKE_ASSIGN",
-                    target = "Lnet/minecraft/world/World;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;",
+                    target = "Lnet/minecraft/world/level/Level;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;",
                     shift = At.Shift.AFTER
             )
     )
     private void onBlockCached(CallbackInfoReturnable<BlockState> cir) {
-        this.lithiumOnBlockCacheSet(this.blockStateAtPos);
+        this.lithiumOnBlockCacheSet(this.feetBlockState);
     }
 
     @Override
-    public BlockState getCachedFeetBlockState() {
-        return this.blockStateAtPos;
+    public BlockState lithiumForge$getCachedFeetBlockState() {
+        return this.feetBlockState;
     }
 }

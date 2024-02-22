@@ -1,21 +1,22 @@
 package github.pitbox46.lithiumforge.mixin.collisions.unpushable_cramming;
 
 import com.google.common.base.Predicates;
-import me.jellysquid.mods.lithium.common.entity.pushable.BlockCachingEntity;
-import me.jellysquid.mods.lithium.common.entity.pushable.EntityPushablePredicate;
-import me.jellysquid.mods.lithium.common.world.ClimbingMobCachingSection;
-import me.jellysquid.mods.lithium.common.world.WorldHelper;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.ChunkSectionPos;
-import net.minecraft.world.World;
-import net.minecraft.world.entity.EntityTrackingSection;
-import net.minecraft.world.entity.SectionedEntityCache;
+import github.pitbox46.lithiumforge.common.entity.pushable.BlockCachingEntity;
+import github.pitbox46.lithiumforge.common.entity.pushable.EntityPushablePredicate;
+import github.pitbox46.lithiumforge.common.world.ClimbingMobCachingSection;
+import github.pitbox46.lithiumforge.common.world.WorldHelper;
+import net.minecraft.core.SectionPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.entity.EntitySection;
+import net.minecraft.world.level.entity.EntitySectionStorage;
+import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
@@ -26,62 +27,64 @@ import java.util.function.Predicate;
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity implements BlockCachingEntity {
 
-    boolean updateClimbingMobCachingSectionOnChange;
+    @Unique
+    boolean lithiumForge$updateClimbingMobCachingSectionOnChange;
 
-    public LivingEntityMixin(EntityType<?> type, World world) {
+    public LivingEntityMixin(EntityType<?> type, Level world) {
         super(type, world);
     }
 
     @Redirect(
-            method = "tickCramming()V",
+            method = "pushEntities",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/World;getOtherEntities(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/math/Box;Ljava/util/function/Predicate;)Ljava/util/List;"
+                    target = "Lnet/minecraft/world/level/Level;getEntities(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/AABB;Ljava/util/function/Predicate;)Ljava/util/List;"
             )
     )
-    private List<Entity> getOtherPushableEntities(World world, @Nullable Entity except, Box box, Predicate<? super Entity> predicate) {
+    private List<Entity> getOtherPushableEntities(Level world, @Nullable Entity except, AABB box, Predicate<? super Entity> predicate) {
         //noinspection Guava
         if (predicate == Predicates.alwaysFalse()) {
             return Collections.emptyList();
         }
         if (predicate instanceof EntityPushablePredicate<?> entityPushablePredicate) {
-            SectionedEntityCache<Entity> cache = WorldHelper.getEntityCacheOrNull(world);
+            EntitySectionStorage<Entity> cache = WorldHelper.getEntityCacheOrNull(world);
             if (cache != null) {
                 //noinspection unchecked
                 return WorldHelper.getPushableEntities(world, cache, except, box, (EntityPushablePredicate<? super Entity>) entityPushablePredicate);
             }
         }
-        return world.getOtherEntities(except, box, predicate);
+        return world.getEntities(except, box, predicate);
     }
 
     @Override
     public void lithiumSetClimbingMobCachingSectionUpdateBehavior(boolean listenForCachedBlockChanges) {
-        this.updateClimbingMobCachingSectionOnChange = listenForCachedBlockChanges;
+        this.lithiumForge$updateClimbingMobCachingSectionOnChange = listenForCachedBlockChanges;
     }
 
     @Override
     public void lithiumOnBlockCacheDeleted() {
-        if (this.updateClimbingMobCachingSectionOnChange) {
-            this.updateClimbingMobCachingSection(null);
+        if (this.lithiumForge$updateClimbingMobCachingSectionOnChange) {
+            this.lithiumForge$updateClimbingMobCachingSection(null);
         }
     }
 
 
     @Override
     public void lithiumOnBlockCacheSet(BlockState newState) {
-        if (this.updateClimbingMobCachingSectionOnChange) {
-            this.updateClimbingMobCachingSection(newState);
+        if (this.lithiumForge$updateClimbingMobCachingSectionOnChange) {
+            this.lithiumForge$updateClimbingMobCachingSection(newState);
         }
     }
 
-    private void updateClimbingMobCachingSection(BlockState newState) {
-        SectionedEntityCache<Entity> entityCacheOrNull = WorldHelper.getEntityCacheOrNull(this.getWorld());
+    @Unique
+    private void lithiumForge$updateClimbingMobCachingSection(BlockState newState) {
+        EntitySectionStorage<Entity> entityCacheOrNull = WorldHelper.getEntityCacheOrNull(this.level());
         if (entityCacheOrNull != null) {
-            EntityTrackingSection<Entity> trackingSection = entityCacheOrNull.findTrackingSection(ChunkSectionPos.toLong(this.getBlockPos()));
+            EntitySection<Entity> trackingSection = entityCacheOrNull.getSection(SectionPos.asLong(this.blockPosition()));
             if (trackingSection != null) {
-                ((ClimbingMobCachingSection) trackingSection).onEntityModifiedCachedBlock(this, newState);
+                ((ClimbingMobCachingSection) trackingSection).lithiumForge$onEntityModifiedCachedBlock(this, newState);
             } else {
-                this.updateClimbingMobCachingSectionOnChange = false;
+                this.lithiumForge$updateClimbingMobCachingSectionOnChange = false;
             }
         }
     }

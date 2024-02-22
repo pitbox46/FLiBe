@@ -13,7 +13,15 @@
     "chunk.palette.PalettedContainer$StrategyMixin",
     "chunk.serialization.PalettedContainerMixin",
     "chunk.serialization.SimpleBitStorageMixin",
-    "collisions.fluid.EntityMixin"
+    "collisions.fluid.EntityMixin",
+    "collisions.intersection.WorldMixin",
+    "collisions.movement.EntityMixin",
+    "collisions.unpushable_cramming.AbstractMinecartMixin",
+    "collisions.unpushable_cramming.BoatMixin",
+    "collisions.unpushable_cramming.EntityMixin",
+    "collisions.unpushable_cramming.EntitySectionMixin",
+    "collisions.unpushable_cramming.EntitySelectorMixin",
+    "collisions.unpushable_cramming.LivingEntityMixin"
   ],
   "client": [
   ],

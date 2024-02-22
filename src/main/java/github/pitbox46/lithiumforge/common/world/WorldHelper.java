@@ -80,7 +80,7 @@ public class WorldHelper {
 
     public static List<Entity> getPushableEntities(Level world, EntitySectionStorage<Entity> cache, Entity except, AABB box, EntityPushablePredicate<? super Entity> entityPushablePredicate) {
         ArrayList<Entity> entities = new ArrayList<>();
-        cache.forEachAccessibleNonEmptySection(box, section -> ((ClimbingMobCachingSection) section).collectPushableEntities(world, except, box, entityPushablePredicate, entities));
+        cache.forEachAccessibleNonEmptySection(box, section -> ((ClimbingMobCachingSection) section).lithiumForge$collectPushableEntities(world, except, box, entityPushablePredicate, entities));
         return entities;
     }
 

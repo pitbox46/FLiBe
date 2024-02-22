@@ -1,19 +1,19 @@
 package github.pitbox46.lithiumforge.mixin.collisions.intersection;
 
-import me.jellysquid.mods.lithium.common.entity.LithiumEntityCollisions;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.Box;
-import net.minecraft.world.EntityView;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
+import github.pitbox46.lithiumforge.common.entity.LithiumEntityCollisions;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.EntityGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 
 /**
  * Replaces collision testing methods with jumps to our own (faster) entity collision testing code.
  */
-@Mixin(World.class)
-public abstract class WorldMixin implements WorldAccess {
+@Mixin(Level.class)
+public abstract class WorldMixin implements LevelAccessor {
 
     /**
      * Checks whether the area is empty from blocks, hard entities and the world border.
@@ -21,11 +21,11 @@ public abstract class WorldMixin implements WorldAccess {
      * @author 2No2Name
      */
     @Override
-    public boolean isSpaceEmpty(@Nullable Entity entity, Box box) {
-        boolean ret = !LithiumEntityCollisions.doesBoxCollideWithBlocks((World) (Object) this, entity, box);
+    public boolean noCollision(@Nullable Entity entity, AABB box) {
+        boolean ret = !LithiumEntityCollisions.doesBoxCollideWithBlocks((Level) (Object) this, entity, box);
 
         // If no blocks were collided with, try to check for entity collisions if we can read entities
-        if (ret && this instanceof EntityView) {
+        if (ret) {
             //needs to include world border collision
             ret = !LithiumEntityCollisions.doesBoxCollideWithHardEntities(this, entity, box);
         }

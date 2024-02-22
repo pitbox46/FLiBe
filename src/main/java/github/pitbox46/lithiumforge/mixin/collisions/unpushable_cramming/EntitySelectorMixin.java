@@ -1,18 +1,18 @@
 package github.pitbox46.lithiumforge.mixin.collisions.unpushable_cramming;
 
-import me.jellysquid.mods.lithium.common.entity.pushable.EntityPushablePredicate;
-import net.minecraft.predicate.entity.EntityPredicates;
+import github.pitbox46.lithiumforge.common.entity.pushable.EntityPushablePredicate;
+import net.minecraft.world.entity.EntitySelector;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.function.Predicate;
 
-@Mixin(EntityPredicates.class)
-public class EntityPredicatesMixin {
+@Mixin(EntitySelector.class)
+public class EntitySelectorMixin {
 
     @Redirect(
-            method = "canBePushedBy(Lnet/minecraft/entity/Entity;)Ljava/util/function/Predicate;",
+            method = "pushableBy",
             at = @At(
                     value = "INVOKE",
                     target = "Ljava/util/function/Predicate;and(Ljava/util/function/Predicate;)Ljava/util/function/Predicate;"
