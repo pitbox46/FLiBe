@@ -1,10 +1,10 @@
-package github.pitbox46.lithiumforge.mixin.collisions.unpushable_cramming;
+package github.pitbox46.lithiumforge.mixin.entity.collisions.unpushable_cramming;
 
 import com.google.common.base.Predicates;
 import github.pitbox46.lithiumforge.common.entity.pushable.EntityPushablePredicate;
 import github.pitbox46.lithiumforge.common.world.WorldHelper;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.entity.EntitySectionStorage;
 import net.minecraft.world.phys.AABB;
@@ -17,14 +17,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
-@Mixin(Boat.class)
-public class BoatMixin {
+@Mixin(AbstractMinecart.class)
+public class AbstractMinecartMixin {
+
     @Redirect(
             method = "tick()V",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/world/level/Level;getEntities(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/AABB;Ljava/util/function/Predicate;)Ljava/util/List;"
-            )
+            ),
+            require = 0 // Consistency Plus compatibility: disable this mixin
     )
     private List<Entity> getOtherPushableEntities(Level world, @Nullable Entity except, AABB box, Predicate<? super Entity> predicate) {
         //noinspection Guava

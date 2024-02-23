@@ -1,4 +1,4 @@
-package github.pitbox46.lithiumforge.mixin.collisions.unpushable_cramming;
+package github.pitbox46.lithiumforge.mixin.entity.collisions.unpushable_cramming;
 
 import github.pitbox46.lithiumforge.common.entity.pushable.EntityPushablePredicate;
 import net.minecraft.world.entity.EntitySelector;

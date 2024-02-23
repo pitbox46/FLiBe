@@ -1,4 +1,4 @@
-package github.pitbox46.lithiumforge.mixin.collisions.movement;
+package github.pitbox46.lithiumforge.mixin.entity.collisions.movement;
 
 import github.pitbox46.lithiumforge.common.entity.LithiumEntityCollisions;
 import net.minecraft.core.Direction;
@@ -11,6 +11,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
@@ -51,6 +52,7 @@ public class EntityMixin {
         return lithiumCollideMultiAxisMovement(entity, movement, entityBoundingBox, world, false, collisions);
     }
 
+    @Unique
     private static Vec3 lithiumCollideMultiAxisMovement(@Nullable Entity entity, Vec3 movement, AABB entityBoundingBox, Level world, boolean getEntityCollisions, List<VoxelShape> otherCollisions) {
         //vanilla order: entities, worldborder, blocks. It is unknown whether changing this order changes the result regarding the confusing 1e-7 VoxelShape margin behavior. Not yet investigated
         double velX = movement.x;
@@ -63,7 +65,7 @@ public class EntityMixin {
                 //Check block directly below center of entity first
                 VoxelShape voxelShape = LithiumEntityCollisions.getCollisionShapeBelowEntity(world, entity, entityBoundingBox);
                 if (voxelShape != null) {
-                    double v = voxelShape.collideX(Direction.Axis.Y, entityBoundingBox, velY);
+                    double v = voxelShape.collide(Direction.Axis.Y, entityBoundingBox, velY);
                     if (v == 0) {
                         return Vec3.ZERO;
                     }

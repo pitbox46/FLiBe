@@ -3,8 +3,12 @@ package github.pitbox46.lithiumforge.common.block;
 import github.pitbox46.lithiumforge.common.ai.pathing.BlockStatePathingCache;
 import github.pitbox46.lithiumforge.common.ai.pathing.PathNodeCache;
 import github.pitbox46.lithiumforge.common.entity.FluidCachingEntity;
+import github.pitbox46.lithiumforge.common.reflection.ReflectionUtil;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanArrayMap;
+import net.minecraft.core.BlockPos;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
@@ -91,7 +95,7 @@ public class BlockStateFlags {
             LAVA = null;
         }
 
-        if (BlockStatePathingCache.class.isAssignableFrom(AbstractBlock.AbstractBlockState.class)) {
+        if (BlockStatePathingCache.class.isAssignableFrom(BlockBehaviour.BlockStateBase.class)) {
             PATH_NOT_OPEN = new TrackedBlockStatePredicate(countingFlags.size()) {
                 @Override
                 public boolean test(BlockState operand) {
@@ -112,10 +116,10 @@ public class BlockStateFlags {
             //How to find the remapped methods:
             //1) Run in the debugger: System.out.println(FabricLoader.getInstance().getMappingResolver().getNamespaceData("intermediary").methodNames)
             //2) Ctrl+F for the method name, in this case "onEntityCollision". Make sure to find the correct one.
-            private final String remapped_onEntityCollision = FabricLoader.getInstance().getMappingResolver().mapMethodName("intermediary", "net.minecraft.class_4970", "method_9548", "(Lnet/minecraft/class_2680;Lnet/minecraft/class_1937;Lnet/minecraft/class_2338;Lnet/minecraft/class_1297;)V");
+            private final String remapped_onEntityCollision = "m_7892_";
             @Override
             public boolean test(BlockState operand) {
-                return ReflectionUtil.hasMethodOverride(operand.getBlock().getClass(), AbstractBlock.class, true, this.remapped_onEntityCollision, BlockState.class, World.class, BlockPos.class, Entity.class);
+                return ReflectionUtil.hasMethodOverride(operand.getBlock().getClass(), BlockBehaviour.class, true, this.remapped_onEntityCollision, BlockState.class, Level.class, BlockPos.class, Entity.class);
             }
         };
         flags.add(ENTITY_TOUCHABLE);

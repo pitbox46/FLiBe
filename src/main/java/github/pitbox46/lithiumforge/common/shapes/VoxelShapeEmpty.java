@@ -10,7 +10,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
  * An efficient implementation of {@link VoxelShape} for a shape with no vertices. Vanilla normally represents this
- * case with an empty {@link net.minecraft.util.shape.SimpleVoxelShape}, but since there is no data the return values
+ * case with an empty {@link net.minecraft.world.phys.shapes.CubeVoxelShape}, but since there is no data the return values
  * here will always be constant. This allows a lot of unnecessary code to be eliminated that would otherwise try to
  * iterate over sets of empty voxels/vertices.
  */
@@ -22,7 +22,7 @@ public class VoxelShapeEmpty extends VoxelShape implements VoxelShapeCaster {
     }
 
     @Override
-    protected double collideX(AxisCycle axisCycle, AABB box, double maxDist) {
+    public double collideX(AxisCycle axisCycle, AABB box, double maxDist) {
         return maxDist;
     }
 

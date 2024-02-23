@@ -1,8 +1,7 @@
-package github.pitbox46.lithiumforge.mixin.collisions.intersection;
+package github.pitbox46.lithiumforge.mixin.entity.collisions.intersection;
 
 import github.pitbox46.lithiumforge.common.entity.LithiumEntityCollisions;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.EntityGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.phys.AABB;

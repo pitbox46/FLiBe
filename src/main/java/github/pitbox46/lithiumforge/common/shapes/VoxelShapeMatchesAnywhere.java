@@ -64,7 +64,7 @@ public class VoxelShapeMatchesAnywhere {
             boolean acceptOtherShapeAlone = predicate.apply(shapeA == otherShape, shapeB == otherShape);
 
             //test the area inside otherShape
-            DiscreteVoxelShape voxelSet = otherShape.voxels;
+            DiscreteVoxelShape voxelSet = otherShape.shape;
             DoubleList pointPositionsX = otherShape.getCoords(X);
             DoubleList pointPositionsY = otherShape.getCoords(Y);
             DoubleList pointPositionsZ = otherShape.getCoords(Z);

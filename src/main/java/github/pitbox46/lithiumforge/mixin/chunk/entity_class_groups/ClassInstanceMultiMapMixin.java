@@ -61,11 +61,11 @@ public abstract class ClassInstanceMultiMapMixin<T> implements ClassGroupFiltera
      * Get entities of a class group
      */
     @Unique
-    public Collection<T> lithiumForge$getAllOfGroupType(EntityClassGroup type) {
+    public Collection<T> getAllOfGroupType(EntityClassGroup type) {
         Collection<T> collection = this.lithiumForge$entitiesByGroup.get(type);
 
         if (collection == null) {
-            collection = this.lithiumForge$createAllOfGroupType(type);
+            collection = this.createAllOfGroupType(type);
         }
 
         return collection;
@@ -75,7 +75,7 @@ public abstract class ClassInstanceMultiMapMixin<T> implements ClassGroupFiltera
      * Start grouping by a new class group
      */
     @Unique
-    private Collection<T> lithiumForge$createAllOfGroupType(EntityClassGroup type) {
+    private Collection<T> createAllOfGroupType(EntityClassGroup type) {
         ReferenceLinkedOpenHashSet<T> allOfType = new ReferenceLinkedOpenHashSet<>();
 
         for (T entity : this.allInstances) {

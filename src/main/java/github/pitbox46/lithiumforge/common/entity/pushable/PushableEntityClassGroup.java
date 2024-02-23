@@ -12,8 +12,8 @@ import net.minecraft.world.entity.player.Player;
 public class PushableEntityClassGroup {
 
     /**
-     * Contains Entity Classes that use {@link LivingEntity#isPushable()} ()} to determine their pushability state
-     * and use {@link LivingEntity#isClimbing()} to determine their climbing state and are never spectators (no players).
+     * Contains Entity Classes that use {@link LivingEntity#isPushable()} to determine their pushability state
+     * and use {@link LivingEntity#onClimbable()} to determine their climbing state and are never spectators (no players).
      * <p>
      * LivingEntity, but not Players and not Subclasses with different pushability calculations
      */
