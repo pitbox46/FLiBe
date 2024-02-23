@@ -39,7 +39,7 @@ public class Pos {
 
     public static class ChunkCoord {
         public static int fromBlockCoord(int blockCoord) {
-            return SectionPos.sectionToBlockCoord(blockCoord);
+            return SectionPos.blockToSectionCoord(blockCoord);
         }
 
         public static int fromBlockSize(int i) {
@@ -88,7 +88,7 @@ public class Pos {
             return sectionCoord - SectionYCoord.getMinYSection(view);
         }
         public static int fromBlockCoord(LevelHeightAccessor view, int blockCoord) {
-            return fromSectionCoord(view, SectionPos.sectionToBlockCoord(blockCoord));
+            return fromSectionCoord(view, SectionPos.blockToSectionCoord(blockCoord));
         }
     }
 }
