@@ -13,7 +13,6 @@
     "chunk.palette.PalettedContainer$StrategyMixin",
     "chunk.serialization.PalettedContainerMixin",
     "chunk.serialization.SimpleBitStorageMixin",
-    "collisions.fluid.EntityMixin",
     "collisions.intersection.WorldMixin",
     "collisions.movement.EntityMixin",
     "collisions.unpushable_cramming.AbstractMinecartMixin",

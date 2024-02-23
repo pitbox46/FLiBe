@@ -1,6 +1,6 @@
 package github.pitbox46.lithiumforge.common.block;
 
-import me.jellysquid.mods.lithium.common.entity.block_tracking.SectionedBlockChangeTracker;
+import github.pitbox46.lithiumforge.common.entity.block_tracking.SectionedBlockChangeTracker;
 
 public interface BlockListeningSection {
 

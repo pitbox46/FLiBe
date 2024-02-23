@@ -1,8 +1,8 @@
 package github.pitbox46.lithiumforge.common.entity.block_tracking;
 
-import me.jellysquid.mods.lithium.common.block.BlockListeningSection;
-import me.jellysquid.mods.lithium.common.block.BlockStateFlags;
-import me.jellysquid.mods.lithium.common.block.ListeningBlockStatePredicate;
+import github.pitbox46.lithiumforge.common.block.BlockListeningSection;
+import github.pitbox46.lithiumforge.common.block.BlockStateFlags;
+import github.pitbox46.lithiumforge.common.block.ListeningBlockStatePredicate;
 
 import java.util.ArrayList;
 

@@ -1,6 +1,7 @@
 package github.pitbox46.lithiumforge.common.entity.block_tracking;
 
-import net.minecraft.entity.Entity;
+
+import net.minecraft.world.entity.Entity;
 
 public interface BlockCacheProvider {
     BlockCache getBlockCache();

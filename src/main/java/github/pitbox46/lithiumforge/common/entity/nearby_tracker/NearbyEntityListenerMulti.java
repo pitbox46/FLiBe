@@ -1,13 +1,12 @@
 package github.pitbox46.lithiumforge.common.entity.nearby_tracker;
 
-import me.jellysquid.mods.lithium.common.util.tuples.Range6Int;
-import me.jellysquid.mods.lithium.mixin.ai.nearby_entity_tracking.ServerEntityManagerAccessor;
-import me.jellysquid.mods.lithium.mixin.ai.nearby_entity_tracking.ServerWorldAccessor;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.math.ChunkSectionPos;
-import net.minecraft.world.entity.EntityLike;
-import net.minecraft.world.entity.SectionedEntityCache;
+import github.pitbox46.lithiumforge.common.util.tuples.Range6Int;
+import net.minecraft.core.SectionPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.entity.EntityAccess;
+import net.minecraft.world.level.entity.EntitySectionStorage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +29,7 @@ public class NearbyEntityListenerMulti implements NearbyEntityListener {
         this.updateRange(tracker);
     }
 
-    private <S extends EntityLike, T extends LivingEntity> void updateRange(NearbyEntityTracker<T> tracker) {
+    private <S extends EntityAccess, T extends LivingEntity> void updateRange(NearbyEntityTracker<T> tracker) {
         if (this.range == null) {
             return;
         }
@@ -39,8 +38,8 @@ public class NearbyEntityListenerMulti implements NearbyEntityListener {
             this.range = updatedRange;
 
             //noinspection unchecked
-            SectionedEntityCache<S> entityCache = ((ServerEntityManagerAccessor<S>)((ServerWorldAccessor)tracker.getEntity().getWorld()).getEntityManager()).getCache();
-            ChunkSectionPos chunkPos = ChunkSectionPos.from(tracker.getEntity().getBlockPos());
+            EntitySectionStorage<S> entityCache = (EntitySectionStorage<S>) ((ServerLevel) tracker.getEntity().level()).entityManager.sectionStorage;
+            SectionPos chunkPos = SectionPos.of(tracker.getEntity().blockPosition());
 
             this.updateChunkRegistrations(entityCache, chunkPos, this.range, chunkPos, updatedRange);
         }

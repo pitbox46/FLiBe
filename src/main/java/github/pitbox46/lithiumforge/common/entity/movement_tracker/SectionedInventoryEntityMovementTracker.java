@@ -1,13 +1,10 @@
 package github.pitbox46.lithiumforge.common.entity.movement_tracker;
 
-import me.jellysquid.mods.lithium.common.util.tuples.WorldSectionBox;
-import me.jellysquid.mods.lithium.mixin.block.hopper.EntityTrackingSectionAccessor;
-import me.jellysquid.mods.lithium.mixin.util.entity_movement_tracking.ServerEntityManagerAccessor;
-import me.jellysquid.mods.lithium.mixin.util.entity_movement_tracking.ServerWorldAccessor;
-import net.minecraft.entity.Entity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.collection.TypeFilterableList;
-import net.minecraft.util.math.Box;
+import github.pitbox46.lithiumforge.common.util.tuples.WorldSectionBox;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ClassInstanceMultiMap;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.AABB;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +15,8 @@ public class SectionedInventoryEntityMovementTracker<S> extends SectionedEntityM
         super(entityAccessBox, clazz);
     }
 
-    public static <S> SectionedInventoryEntityMovementTracker<S> registerAt(ServerWorld world, Box interactionArea, Class<S> clazz) {
-        MovementTrackerCache cache = (MovementTrackerCache) ((ServerEntityManagerAccessor<?>) ((ServerWorldAccessor) world).getEntityManager()).getCache();
+    public static <S> SectionedInventoryEntityMovementTracker<S> registerAt(ServerLevel world, AABB interactionArea, Class<S> clazz) {
+        MovementTrackerCache cache = (MovementTrackerCache) world.entityManager.sectionStorage;
 
         WorldSectionBox worldSectionBox = WorldSectionBox.entityAccessBox(world, interactionArea);
         SectionedInventoryEntityMovementTracker<S> tracker = new SectionedInventoryEntityMovementTracker<>(worldSectionBox, clazz);
@@ -29,14 +26,14 @@ public class SectionedInventoryEntityMovementTracker<S> extends SectionedEntityM
         return tracker;
     }
 
-    public List<S> getEntities(Box box) {
+    public List<S> getEntities(AABB box) {
         ArrayList<S> entities = new ArrayList<>();
         for (int i = 0; i < this.sortedSections.size(); i++) {
             if (this.sectionVisible[i]) {
                 //noinspection unchecked
-                TypeFilterableList<S> collection = ((EntityTrackingSectionAccessor<S>) this.sortedSections.get(i)).getCollection();
+                ClassInstanceMultiMap<S> collection = (ClassInstanceMultiMap<S>) this.sortedSections.get(i).storage;
 
-                for (S entity : collection.getAllOfType(this.clazz)) {
+                for (S entity : collection.find(this.clazz)) {
                     Entity inventoryEntity = (Entity) entity;
                     if (inventoryEntity.isAlive() && inventoryEntity.getBoundingBox().intersects(box)) {
                         entities.add(entity);

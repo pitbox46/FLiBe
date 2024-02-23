@@ -1,12 +1,13 @@
 package github.pitbox46.lithiumforge.common.world;
 
-import github.pitbox46.lithiumforge.common.client.ClientWorldAccessor;
 import github.pitbox46.lithiumforge.common.entity.EntityClassGroup;
 import github.pitbox46.lithiumforge.common.entity.pushable.EntityPushablePredicate;
-import github.pitbox46.lithiumforge.mixin.chunk.entity_class_groups.TransientEntitySectionManagerAccessor;
-import github.pitbox46.lithiumforge.mixin.chunk.entity_class_groups.ServerEntityManagerAccessor;
-import github.pitbox46.lithiumforge.mixin.chunk.entity_class_groups.ServerLevelAccessor;
+import github.pitbox46.lithiumforge.common.world.chunk.ClassGroupFilterableList;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.AbortableIterationConsumer;
+import net.minecraft.util.ClassInstanceMultiMap;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.EntityGetter;
 import net.minecraft.world.level.Level;
@@ -18,7 +19,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class WorldHelper {
-    public static final boolean CUSTOM_TYPE_FILTERABLE_LIST_DISABLED = !ClassGroupFilterableList.class.isAssignableFrom(TypeFilterableList.class);
+    public static final boolean CUSTOM_TYPE_FILTERABLE_LIST_DISABLED = !ClassGroupFilterableList.class.isAssignableFrom(ClassInstanceMultiMap.class);
 
     /**
      * Partial [VanillaCopy]
@@ -48,21 +49,21 @@ public class WorldHelper {
 
     //Requires chunk.entity_class_groups
     public static EntitySectionStorage<Entity> getEntityCacheOrNull(Level world) {
-        if (world instanceof ClientWorldAccessor) {
+        if (world instanceof ClientLevel clientLevel) {
             //noinspection unchecked
-            return ((TransientEntitySectionManagerAccessor<Entity>) ((ClientWorldAccessor) world).getEntityManager()).getCache();
-        } else if (world instanceof ServerLevelAccessor) {
+            return clientLevel.entityStorage.sectionStorage;
+        } else if (world instanceof ServerLevel serverLevel) {
             //noinspection unchecked
-            return ((ServerEntityManagerAccessor<Entity>) ((ServerLevelAccessor) world).getEntityManager()).getCache();
+            return serverLevel.entityManager.sectionStorage;
         }
         return null;
     }
 
-    public static List<Entity> getEntitiesOfClassGroup(EntitySectionStorage<Entity> cache, Entity collidingEntity, EntityClassGroup.NoDragonClassGroup entityClassGroup, Box box) {
+    public static List<Entity> getEntitiesOfClassGroup(EntitySectionStorage<Entity> cache, Entity collidingEntity, EntityClassGroup.NoDragonClassGroup entityClassGroup, AABB box) {
         ArrayList<Entity> entities = new ArrayList<>();
         cache.forEachAccessibleNonEmptySection(box, section -> {
             //noinspection unchecked
-            TypeFilterableList<Entity> allEntities = ((EntityTrackingSectionAccessor<Entity>) section).getCollection();
+            ClassInstanceMultiMap<Entity> allEntities = section.storage;
             //noinspection unchecked
             Collection<Entity> entitiesOfType = ((ClassGroupFilterableList<Entity>) allEntities).getAllOfGroupType(entityClassGroup);
             if (!entitiesOfType.isEmpty()) {
@@ -73,7 +74,7 @@ public class WorldHelper {
                     }
                 }
             }
-            return LazyIterationConsumer.NextIteration.CONTINUE;
+            return AbortableIterationConsumer.Continuation.CONTINUE;
         });
         return entities;
     }
