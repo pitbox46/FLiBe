@@ -42,7 +42,6 @@ public class ServerEntityManagerListenerMixin<T extends EntityAccess> {
         if (listener != null)
         {
             Range6Int chunkRange = listener.getChunkRange();
-            //noinspection unchecked
             listener.updateChunkRegistrations(
                     this$0.sectionStorage,
                     SectionPos.of(this.currentSectionKey), chunkRange,
@@ -60,7 +59,6 @@ public class ServerEntityManagerListenerMixin<T extends EntityAccess> {
     private void onRemoveEntity(Entity.RemovalReason reason, CallbackInfo ci) {
         NearbyEntityListenerMulti listener = ((NearbyEntityListenerProvider) this.entity).getListener();
         if (listener != null) {
-            //noinspection unchecked
             listener.removeFromAllChunksInRange(
                     this.this$0.sectionStorage,
                     SectionPos.of(this.currentSectionKey)

@@ -13,6 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.VisibleForDebug;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.entity.ai.village.poi.PoiRecord;
@@ -46,6 +47,7 @@ public abstract class PointOfInterestStorageMixin extends SectionStorage<PoiSect
      * @reason Retrieve all points of interest in one operation
      * @author JellySquid
      */
+    @VisibleForDebug
     @Debug
     @SuppressWarnings("unchecked")
     @Overwrite

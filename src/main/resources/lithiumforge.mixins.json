@@ -9,6 +9,7 @@
     "ai.nearby_entity_tracking.EntityMixin",
     "ai.nearby_entity_tracking.EntityTrackingSectionMixin",
     "ai.nearby_entity_tracking.ServerEntityManagerListenerMixin",
+    "ai.nearby_entity_tracking.ServerEntityManagerMixin",
     "ai.nearby_entity_tracking.goals.FleeEntityGoalMixin",
     "ai.nearby_entity_tracking.goals.LookAtEntityGoalMixin",
     "ai.pathing.AbstractBlockStateMixin",

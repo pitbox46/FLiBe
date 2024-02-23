@@ -66,7 +66,7 @@ public class DefaultConfigCreator {
             for (CreateMixinConfigTask.MixinRuleRepresentation option : sortedMixinConfigOptions) {
                 writer.write("### `" + option.path() + "`\n");
                 writer.write("(default: `" + option.config().enabled() + "`)  \n");
-                if (option.config().description().length() > 0) {
+                if (!option.config().description().isEmpty()) {
                     writer.write(option.config().description() + "  \n");
                 }
                 if (option.config().depends().length > 0) {

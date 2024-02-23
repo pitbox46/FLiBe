@@ -1,5 +1,11 @@
 package github.pitbox46.lithiumforge.mixin.ai.nearby_entity_tracking;
 
+import github.pitbox46.lithiumforge.common.entity.nearby_tracker.NearbyEntityListenerMulti;
+import github.pitbox46.lithiumforge.common.entity.nearby_tracker.NearbyEntityListenerProvider;
+import net.minecraft.core.SectionPos;
+import net.minecraft.world.level.entity.EntityAccess;
+import net.minecraft.world.level.entity.EntitySectionStorage;
+import net.minecraft.world.level.entity.PersistentEntitySectionManager;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -7,17 +13,17 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(ServerEntityManager.class)
-public abstract class ServerEntityManagerMixin<T extends EntityLike> {
+@Mixin(PersistentEntitySectionManager.class)
+public abstract class ServerEntityManagerMixin<T extends EntityAccess> {
     @Shadow
     @Final
-    SectionedEntityCache<T> cache;
+    public EntitySectionStorage<T> sectionStorage;
 
     @Inject(
-            method = "addEntity(Lnet/minecraft/world/entity/EntityLike;Z)Z",
+            method = "addEntityWithoutEvent",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/entity/EntityLike;setChangeListener(Lnet/minecraft/world/entity/EntityChangeListener;)V",
+                    target = "Lnet/minecraft/world/level/entity/EntityAccess;setLevelCallback(Lnet/minecraft/world/level/entity/EntityInLevelCallback;)V",
                     shift = At.Shift.AFTER
             )
     )
@@ -25,8 +31,8 @@ public abstract class ServerEntityManagerMixin<T extends EntityLike> {
         NearbyEntityListenerMulti listener = ((NearbyEntityListenerProvider) entity).getListener();
         if (listener != null) {
             listener.addToAllChunksInRange(
-                    this.cache,
-                    ChunkSectionPos.from(entity.getBlockPos())
+                    this.sectionStorage,
+                    SectionPos.of(entity.blockPosition())
             );
         }
     }

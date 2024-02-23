@@ -5,6 +5,7 @@ import com.mojang.datafixers.util.Pair;
 import github.pitbox46.lithiumforge.common.util.collections.MaskedList;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.VisibleForDebug;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.behavior.Behavior;
@@ -107,6 +108,7 @@ public class BrainMixin<E extends LivingEntity> {
      * @author 2No2Name
      * @reason use optimized cached collection
      */
+    @VisibleForDebug
     @Overwrite
     @Deprecated
     @Debug
