@@ -16,6 +16,66 @@ mixin.gen.biome_noise_cache=false
 ```
 
 # Configuration options
+### `mixin.ai`
+(default: `true`)  
+Mob AI optimizations  
+  
+### `mixin.ai.nearby_entity_tracking`
+(default: `false`)  
+Event-based system for tracking nearby entities.
+  
+Requirements:
+- `mixin.util.entity_section_position=true`  
+  
+### `mixin.ai.nearby_entity_tracking.goals`
+(default: `true`)  
+A number of AI goals which query for nearby entities in the world every tick will use the event-based
+system for tracking nearby entities. In other words, instead of entities constantly polling to see if
+other entities are nearby, they will instead be notified only occasionally when such an entity enters
+their range.
+  
+  
+### `mixin.ai.pathing`
+(default: `true`)  
+A faster code path is used for determining what kind of path-finding node type is associated with a
+given block. Additionally, a faster chunk cache will be used for accessing blocks while evaluating
+paths.
+  
+Requirements:
+- `mixin.util.chunk_access=true`  
+  
+### `mixin.ai.poi`
+(default: `true`)  
+Implements a faster POI search  
+  
+### `mixin.ai.poi.fast_portals`
+(default: `true`)  
+Portal search uses the faster POI search and optimized loaded state caching  
+  
+### `mixin.ai.raid`
+(default: `true`)  
+Avoids unnecessary raid bar updates and optimizes expensive leader banner operations  
+  
+### `mixin.ai.sensor.secondary_poi`
+(default: `true`)  
+Avoid unnecessary secondary POI searches of non-farmer villagers  
+  
+### `mixin.ai.task`
+(default: `true`)  
+Various AI task optimizations  
+  
+### `mixin.ai.task.launch`
+(default: `true`)  
+Keep track of running and runnable tasks to speed up task launching checks  
+  
+### `mixin.ai.task.memory_change_counting`
+(default: `true`)  
+Keep track of AI memory changes to skip checking AI task memory prerequisites  
+  
+### `mixin.ai.task.replace_streams`
+(default: `true`)  
+Replace Stream code of AI tasks with more traditional iteration.  
+  
 ### `mixin.chunk`
 (default: `true`)  
 Various world chunk optimizations  
