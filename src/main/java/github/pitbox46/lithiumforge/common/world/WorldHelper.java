@@ -49,12 +49,12 @@ public class WorldHelper {
 
     //Requires chunk.entity_class_groups
     public static EntitySectionStorage<Entity> getEntityCacheOrNull(Level world) {
-        if (world instanceof ClientLevel clientLevel) {
+        if (world instanceof ClientLevelAccessor clientLevel) {
             //noinspection unchecked
-            return clientLevel.entityStorage.sectionStorage;
-        } else if (world instanceof ServerLevel serverLevel) {
+            return clientLevel.lithiumForge$getEntitySectionManager().sectionStorage;
+        } else if (world instanceof ServerLevelAccessor serverLevel) {
             //noinspection unchecked
-            return serverLevel.entityManager.sectionStorage;
+            return serverLevel.lithiumForge$getEntitySectionManager().sectionStorage;
         }
         return null;
     }

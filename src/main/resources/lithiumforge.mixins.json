@@ -6,6 +6,7 @@
   "refmap": "lithiumforge.refmap.json",
   "mixins": [
     "chunk.entity_class_groups.ClassInstanceMultiMapMixin",
+    "chunk.entity_class_groups.ServerLevelMixin",
     "chunk.no_locking.LevelChunkSectionMixin",
     "chunk.no_locking.PalettedContainerMixin",
     "chunk.no_validation.SimpleBitStorageMixin",
@@ -28,6 +29,7 @@
     "util.chunk_access.WorldViewMixin"
   ],
   "client": [
+    "chunk.entity_class_groups.ClientLevelMixin"
   ],
   "injectors": {
     "defaultRequire": 1
