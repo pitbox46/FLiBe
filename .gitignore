@@ -119,3 +119,7 @@ run/
 /gradle/wrapper/gradle-wrapper.jar
 /gradlew
 /gradlew.bat
+/src/main/resources/assets/lithiumforge/flibe-mixin-config-default.properties
+/src/main/resources/assets/lithiumforge/flibe-mixin-config-dependencies.properties
+/src/main/resources/assets/lithiumforge/lithiumforge-mixin-config-default.properties
+/src/main/resources/assets/lithiumforge/lithiumforge-mixin-config-dependencies.properties

@@ -1,6 +1,7 @@
 package github.pitbox46.lithiumforge;
 
 import com.mojang.logging.LogUtils;
+import github.pitbox46.lithiumforge.common.config.LithiumConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.food.FoodProperties;
@@ -34,9 +35,12 @@ import org.slf4j.Logger;
 public class LithiumForge {
     public static final String MODID = "lithiumforge";
     private static final Logger LOGGER = LogUtils.getLogger();
+    public static LithiumConfig CONFIG;
 
     public LithiumForge() {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        if (CONFIG == null) {
+            throw new IllegalStateException("The mixin plugin did not initialize the config! Did it not load?");
+        }
     }
 
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)

@@ -4,6 +4,7 @@
   "package": "github.pitbox46.lithiumforge.mixin",
   "compatibilityLevel": "JAVA_8",
   "refmap": "lithiumforge.refmap.json",
+  "plugin": "github.pitbox46.lithiumforge.mixin.LithiumMixinPlugin",
   "mixins": [
     "chunk.entity_class_groups.ClassInstanceMultiMapMixin",
     "chunk.entity_class_groups.ServerLevelMixin",

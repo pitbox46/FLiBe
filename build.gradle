@@ -13,9 +13,11 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'net.caffeinemc.mixin-config-plugin' version '1.0-SNAPSHOT'
 }
 
 apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'net.caffeinemc.mixin-config-plugin'
 
 group = mod_group_id
 version = mod_version
@@ -172,6 +174,16 @@ dependencies {
     runtimeOnly(fg.deobf("curse.maven:spark-361579:4738952"))
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    compileOnly 'net.caffeinemc:mixin-config-plugin:1.0-SNAPSHOT'
+}
+
+createMixinConfig {
+    inputFiles = file(compileJava.getDestinationDirectory())
+    includeFiles = file("src/main/java/github/pitbox46/${mod_id}")
+    outputDirectory = file("src/main/resources/assets/${mod_id}/")
+    outputDirectoryForSummaryDocument = file(".")
+    mixinParentPackage = "${mod_group_id}.${mod_id}"
+    modShortName = "${mod_id}"
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
