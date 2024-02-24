@@ -84,7 +84,7 @@ public abstract class PointOfInterestStorageMixin extends SectionStorage<PoiSect
 
         for (int y = minSubChunk; y <= maxSubChunk; y++) {
             Optional<PoiSection> section = this.get(SectionPos.asLong(x, y, z));
-            if (section.isPresent()) {
+            if (section != null && section.isPresent()) {
                 boolean result = section.get().isValid();
                 if (result) {
                     if (this.loadedChunks.add(longChunkPos)) {

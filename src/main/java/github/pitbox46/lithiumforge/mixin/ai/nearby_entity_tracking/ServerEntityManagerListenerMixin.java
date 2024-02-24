@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-@Mixin(targets = "net/minecraft/world/level/entity/PersistentEntitySectionManager$Callback")
+@Mixin(PersistentEntitySectionManager.Callback.class)
 public class ServerEntityManagerListenerMixin<T extends EntityAccess> {
     @Shadow
     @Final
