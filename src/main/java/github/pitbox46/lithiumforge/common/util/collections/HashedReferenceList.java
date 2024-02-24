@@ -53,7 +53,6 @@ public class HashedReferenceList<T> implements List<T> {
         return this.list.toArray();
     }
 
-    @SuppressWarnings("SuspiciousToArrayCall")
     @Override
     public <T1> T1[] toArray(T1 @NotNull [] a) {
         return this.list.toArray(a);

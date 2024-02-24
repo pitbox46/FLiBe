@@ -50,10 +50,8 @@ public class WorldHelper {
     //Requires chunk.entity_class_groups
     public static EntitySectionStorage<Entity> getEntityCacheOrNull(Level world) {
         if (world instanceof ClientLevelAccessor clientLevel) {
-            //noinspection unchecked
             return clientLevel.lithiumForge$getEntitySectionManager().sectionStorage;
         } else if (world instanceof ServerLevelAccessor serverLevel) {
-            //noinspection unchecked
             return serverLevel.lithiumForge$getEntitySectionManager().sectionStorage;
         }
         return null;
@@ -62,7 +60,6 @@ public class WorldHelper {
     public static List<Entity> getEntitiesOfClassGroup(EntitySectionStorage<Entity> cache, Entity collidingEntity, EntityClassGroup.NoDragonClassGroup entityClassGroup, AABB box) {
         ArrayList<Entity> entities = new ArrayList<>();
         cache.forEachAccessibleNonEmptySection(box, section -> {
-            //noinspection unchecked
             ClassInstanceMultiMap<Entity> allEntities = section.storage;
             //noinspection unchecked
             Collection<Entity> entitiesOfType = ((ClassGroupFilterableList<Entity>) allEntities).getAllOfGroupType(entityClassGroup);
