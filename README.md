@@ -1,6 +1,6 @@
 # FLiBe
 
-**DEPRECATED IN FAVOR OF (Canary)[https://github.com/AbdElAziz333/Canary]** which I did not know existed
+**DEPRECATED IN FAVOR OF [Canary](https://github.com/AbdElAziz333/Canary)** which I did not know existed
 
 A port of the popular performance mod **Lithium** for Forge
 
